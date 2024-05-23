@@ -8,9 +8,14 @@ import { HiOutlineUserCircle } from "react-icons/hi";
 import { RiEditCircleLine } from "react-icons/ri";
 import { IoMdTrash } from "react-icons/io";
 import ContactCard from './components/ContactCard';
+import Modal from './components/Modal';
+import AddAndUpdateContact from './components/AddAndUpdateContact';
+import useDisclouse from './hooks/useDisclouse';
 
 const App = () => {
   const [contacts, setContacts] = useState([]);
+  const {onOpen, onClose, isOpen} = useDisclouse();
+
   useEffect(() => {
     const getContacts = async () => {
       try {
@@ -29,26 +34,29 @@ const App = () => {
     };
     getContacts();
   },[]);
-  console.log(contacts);
   return (
-    <div className='max-w-[370px] mx-auto px-4'>
-      <Navbar/>
-      <div className='flex gap-2'>
-        <div className='flex relative items-center flex-grow '>
-          <FiSearch className='text-white text-3xl absolute ml-1'/>
-          <input type="text" className='flex-grow border border-white bg-transparent h-10 rounded-md text-white pl-9'/>
+    
+    <>
+      <div className='max-w-[370px] mx-auto px-4'>
+        <Navbar/>
+        <div className='flex gap-2'>
+          <div className='flex relative items-center flex-grow '>
+            <FiSearch className='text-white text-3xl absolute ml-1'/>
+            <input type="text" className='flex-grow border border-white bg-transparent h-10 rounded-md text-white pl-9'/>
+          </div>
+          <div className='text-white text-4xl'>
+            <AiFillPlusCircle onClick={onOpen}/>
+          </div>
         </div>
-        <div className='text-white text-4xl'>
-          <AiFillPlusCircle/>
-        </div>
+        <div className='flex flex-col gap-3 mt-4'>{
+          contacts.map((contact) => (
+              <ContactCard key={contact.id} contact={contact}/> 
+          ))    
+            
+        }</div>
+       <AddAndUpdateContact isOpen={isOpen} onClose={onClose}/>
       </div>
-      <div className='flex flex-col gap-3 mt-4'>{
-        contacts.map((contact) => (
-            <ContactCard key={contact.id} contact={contact}/> 
-        ))    
-          
-      }</div>
-    </div>
+    </>
   )
 }
 
