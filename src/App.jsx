@@ -1,34 +1,36 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-
-function App() {
-  const [count, setCount] = useState(0)
-
+import React, { useState, useEffect } from 'react'
+import Navbar from './components/Navbar'
+import { FiSearch } from "react-icons/fi";
+import { AiFillPlusCircle } from "react-icons/ai";
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from './config/firebase';
+const App = () => {
+  const [contacts, setContacts] = useState([]);
+  useEffect(() => {
+    const getContacts = async () => {
+      try {
+        const contactRef = collection(db, 'contacts');
+        const contactSnapShot = await getDocs(contactRef);
+        console.log(contactSnapShot);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getContacts();
+  },[]);
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className='max-w-[370px] mx-auto px-4'>
+      <Navbar/>
+      <div className='flex gap-2'>
+        <div className='flex relative items-center flex-grow '>
+          <FiSearch className='text-white text-3xl absolute ml-1'/>
+          <input type="text" className='flex-grow border border-white bg-transparent h-10 rounded-md text-white pl-9'/>
+        </div>
+        <div className='text-white text-4xl'>
+          <AiFillPlusCircle/>
+        </div>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </div>
   )
 }
 
